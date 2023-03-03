@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+Mazemap CMX example based heavily on https://api.mazemap.com/js/v2.0.0-beta/docs/examples.html#ex-route-basic
+and
+https://flask-socketio.readthedocs.io/en/latest/getting_started.html
+
+Written by K. M. Knausgård 2022-03-02
+-->
+<head>
+	<meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.0-beta/mazemap.min.css">
+	<script type='text/javascript' src='https://api.mazemap.com/js/v2.0.0-beta/mazemap.min.js'></script>
+
+	<style>
+		body { margin:0px; padding:0px; width: 100%; height:100%; font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif }
+		#controls{
+			position: absolute;
+			box-sizing: border-box;
+			padding: 10px;
+			top: 10px;
+			left: 60px;
+			width: auto;
+			height: auto;
+			right: 60px;
+			display: flex;
+		}
+		#controls button{
+			margin-top: 0px;
+			background-color: rgb(31, 175, 252);
+			padding: 0px 10px;
+			border-radius: 4px;
+			color: rgb(255, 255, 255);
+			width: auto;
+			border: 0;
+			flex-grow: 1;
+			margin: 0px 10px;
+		}
+	</style>
+
+	<script type="text/javascript" charset="utf-8">
+		var socket = io();
+
+		socket.on('connect', function() {
+			socket.emit('custom_event', {data: 'Connected to the SocketServer...'});
+		});
+
+		socket.on('geo_position', function(data) {
+        	console.log( 'Geo position received ' + data.longitude );
+        	var start = { lngLat: {lng: data.longitude, lat: data.latitude}, zLevel: 3};
+        	console.log(start)
+			var dest = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
+        	setRoute(start, dest)
+    	});
+
+    	function findRoute(){
+    		socket.emit('request_geo_position', {data: ''});
+    	}
+	</script>
+</head>
+<body>
+	<div id="map" class="mazemap"></div>
+	<div id="controls" class="mapboxgl-ctrl-group">
+	<button onClick="findRoute()">Find new route..</button>
+	</div>
+	<script>
+
+		var myMap = new Mazebox.Map({
+			// container id specified in the HTML
+			container: 'map',
+			campuses: 225,
+			center: {lng: 8.5762231385849, lat: 58.334324365120615},
+			zoom: 20.0,
+			zLevel: 3,
+			scrollZoom: true,
+			doubleClickZoom: false,
+			touchZoomRotate: false
+		});
+
+		// Some hardcoded route example start and destinations
+		var start1 = { lngLat: {lng: 8.5762231385849, lat: 58.334324365120615}, zLevel: 3};
+		var dest1 = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
+
+
+		function setRoute( start, dest ){
+			Mazebox.Route.getAndDisplayRoute(myMap, start, dest)
+			.then(function(geojson){
+				console.log('@ geojson', geojson);
+				var bounds = Mazebox.Util.Turf.bbox(geojson);
+				myMap.fitBounds( bounds, {padding: 100} );
+			});
+		}
+
+		myMap.on('load', function(){
+			//setRoute(start1, dest1);
+		});
+
+	</script>
+</body>

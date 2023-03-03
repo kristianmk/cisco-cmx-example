@@ -12,8 +12,10 @@ Written by K. M. Knausgård 2022-03-02
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 
-	<link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.0-beta/mazemap.min.css">
-	<script type='text/javascript' src='https://api.mazemap.com/js/v2.0.0-beta/mazemap.min.js'></script>
+
+    <link rel="stylesheet" href="https://api.mazemap.com/js/v2.0.94/mazemap.min.css">
+	<script type='text/javascript' src='https://api.mazemap.com/js/v2.0.94/mazemap.min.js'></script>
+
 
 	<style>
 		body { margin:0px; padding:0px; width: 100%; height:100%; font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif }
@@ -53,7 +55,12 @@ Written by K. M. Knausgård 2022-03-02
         	var start = { lngLat: {lng: data.longitude, lat: data.latitude}, zLevel: 3};
         	console.log(start)
 			var dest = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
-        	setRoute(start, dest)
+
+			addMarker(start);
+
+			addBlueDot(start, 10);
+
+        	setRoute(start, dest);
     	});
 
     	function findRoute(){
@@ -68,7 +75,7 @@ Written by K. M. Knausgård 2022-03-02
 	</div>
 	<script>
 
-		var myMap = new Mazebox.Map({
+		var myMap = new Mazemap.Map({
 			// container id specified in the HTML
 			container: 'map',
 			campuses: 225,
@@ -84,6 +91,23 @@ Written by K. M. Knausgård 2022-03-02
 		var start1 = { lngLat: {lng: 8.5762231385849, lat: 58.334324365120615}, zLevel: 3};
 		var dest1 = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
 
+		function addMarker( position ) {
+			var marker = new Mazemap.MazeMarker( {
+				zLevel: 2 // Floor level
+			} )
+			.setLngLat( position.lngLat )
+			.addTo(myMap); // Now add to the map
+		}
+
+		function addBlueDot( position, accuracy ) {
+			const blueDot = new Mazemap.BlueDot({
+				map: myMap,
+			})
+				.setLngLat(position.lngLat)
+				.setZLevel(3)
+				.setAccuracy(accuracy)
+				.show();
+		}
 
 		function setRoute( start, dest ){
 			Mazebox.Route.getAndDisplayRoute(myMap, start, dest)
@@ -96,6 +120,9 @@ Written by K. M. Knausgård 2022-03-02
 
 		myMap.on('load', function(){
 			//setRoute(start1, dest1);
+			var dest = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
+			addBlueDot(dest, 10);
+			console.log("Added blue dot")
 		});
 
 	</script>

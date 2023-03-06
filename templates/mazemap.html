@@ -52,13 +52,13 @@ Written by K. M. Knausgård 2022-03-02
 
 		socket.on('geo_position', function(data) {
         	console.log( 'Geo position received ' + data.longitude );
-        	var start = { lngLat: {lng: data.longitude, lat: data.latitude}, zLevel: 3};
+        	var start = { lngLat: {lng: data.longitude, lat: data.latitude}, zLevel: myMap.zLevel};
         	console.log(start)
 			var dest = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
 
 			//addMarker(start);
 
-			addBlueDot(start, 10);
+			addBlueDot(start, data.confidenceFactor);
 
         	setRoute(start, dest);
     	});
@@ -92,22 +92,24 @@ Written by K. M. Knausgård 2022-03-02
 
 		// Some hardcoded route example start and destinations
 		var start1 = { lngLat: {lng: 8.5762231385849, lat: 58.334324365120615}, zLevel: 3};
-		var dest1 = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
+		//var dest1 = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
 
 		function addMarker( position ) {
 			var marker = new Mazemap.MazeMarker( {
-				zLevel: 2 // Floor level
+				zLevel: myMap.zLevel // Floor level
 			} )
 			.setLngLat( position.lngLat )
 			.addTo(myMap); // Now add to the map
 		}
 
 		function addBlueDot( position, accuracy ) {
+			console.log("Test: " + myMap.zLevel);
+
 			const blueDot = new Mazemap.BlueDot({
 				map: myMap,
 			})
 				.setLngLat(position.lngLat)
-				.setZLevel(3)
+				.setZLevel(myMap.zLevel)
 				.setAccuracy(accuracy)
 				.show();
 		}
@@ -116,7 +118,7 @@ Written by K. M. Knausgård 2022-03-02
 			Mazemap.Route.getAndDisplayRoute(myMap, start, dest)
 			.then(function(geojson){
 				console.log('@ geojson', geojson);
-				var bounds = Mazebox.Util.Turf.bbox(geojson);
+				var bounds = Mazemap.Util.Turf.bbox(geojson);
 				myMap.fitBounds( bounds, {padding: 100} );
 			});
 		}

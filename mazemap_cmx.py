@@ -26,7 +26,8 @@ socketio = SocketIO(app, sync_mode=async_mode)
 def fetch_device_position(hw_addr):
     print(protocol + server + api)
     r = requests.get(protocol + server + api,
-                     auth=(os.environ["cmx_user"], os.environ["cmx_password"]), params={"macAddress": hw_addr})
+                     auth=(os.environ["cmx_user"], os.environ["cmx_password"]),
+                     params={"macAddress": hw_addr})
     print(r.text)
 
     data = r.json()
@@ -34,7 +35,9 @@ def fetch_device_position(hw_addr):
         print("No valid response.")
         return
 
-    coordinates = data[0].get("geoCoordinate")
+    coordinates = data[0]["geoCoordinate"]
+    print(data[0].get("confidenceFactor"))
+    coordinates["confidenceFactor"] = data[0]["confidenceFactor"]
 
     if coordinates is None:
         print("No valid coordinates in response")

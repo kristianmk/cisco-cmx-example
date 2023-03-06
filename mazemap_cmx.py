@@ -37,7 +37,7 @@ def fetch_device_position(hw_addr):
 
     coordinates = data[0]["geoCoordinate"]
     print(data[0].get("confidenceFactor"))
-    coordinates["confidenceFactor"] = data[0]["confidenceFactor"]
+    coordinates["confidenceFactor"] = data[0]["confidenceFactor"]*f2m  # Radius of 95% probability
 
     if coordinates is None:
         print("No valid coordinates in response")

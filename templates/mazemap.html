@@ -56,7 +56,7 @@ Written by K. M. Knausgård 2022-03-02
         	console.log(start)
 			var dest = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
 
-			addMarker(start);
+			//addMarker(start);
 
 			addBlueDot(start, 10);
 
@@ -84,7 +84,10 @@ Written by K. M. Knausgård 2022-03-02
 			zLevel: 3,
 			scrollZoom: true,
 			doubleClickZoom: false,
-			touchZoomRotate: false
+			touchZoomRotate: false,
+			//enable3d: true,
+			//pitch: 56.8,
+        	//bearing: -28.8,
 		});
 
 		// Some hardcoded route example start and destinations
@@ -110,7 +113,7 @@ Written by K. M. Knausgård 2022-03-02
 		}
 
 		function setRoute( start, dest ){
-			Mazebox.Route.getAndDisplayRoute(myMap, start, dest)
+			Mazemap.Route.getAndDisplayRoute(myMap, start, dest)
 			.then(function(geojson){
 				console.log('@ geojson', geojson);
 				var bounds = Mazebox.Util.Turf.bbox(geojson);
@@ -120,9 +123,9 @@ Written by K. M. Knausgård 2022-03-02
 
 		myMap.on('load', function(){
 			//setRoute(start1, dest1);
-			var dest = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
-			addBlueDot(dest, 10);
-			console.log("Added blue dot")
+			//var dest = { lngLat: {lng: 8.575902, lat: 58.334550}, zLevel: 4};
+			//addBlueDot(dest, 10);
+			//console.log("Added blue dot")
 		});
 
 	</script>
